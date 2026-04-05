@@ -59,9 +59,9 @@ window.addEventListener('scroll', function() {
     const title = document.querySelector('.publication-title');
     if (!title) return;
 
-    // Base boundary is 80%, range is ±10% (so 70% to 90%)
-    const baseBoundary = 80;
-    const range = 10;
+    // Base boundary is 81%, range is ±11% (so 70% to 92%)
+    const baseBoundary = 81;
+    const range = 11;
     const speed = 0.0005; // Controls animation speed
 
     let startTime = null;
