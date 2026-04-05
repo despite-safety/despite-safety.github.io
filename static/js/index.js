@@ -53,3 +53,30 @@ window.addEventListener('scroll', function() {
         }
     }
 });
+
+// Animated gradient effect for title
+(function() {
+    const title = document.querySelector('.publication-title');
+    if (!title) return;
+
+    // Base boundary is 80%, range is ±10% (so 70% to 90%)
+    const baseBoundary = 80;
+    const range = 10;
+    const speed = 0.0005; // Controls animation speed
+
+    let startTime = null;
+
+    function animate(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+
+        // Use cosine wave for smooth back-and-forth motion (starts at max)
+        const offset = Math.cos(elapsed * speed) * range;
+        const boundary = baseBoundary + offset;
+
+        title.style.setProperty('--gradient-boundary', boundary + '%');
+        requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+})();

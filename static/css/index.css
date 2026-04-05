@@ -86,7 +86,8 @@ body {
   margin-bottom: 1.5rem !important;
   line-height: 1.15 !important;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #1b7340 70%, #8b3a3a 30%);
+  --gradient-boundary: 70%;
+  background: linear-gradient(135deg, #1b7340 var(--gradient-boundary), #8b3a3a calc(100% - var(--gradient-boundary)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
