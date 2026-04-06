@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://taozhang1004.github.io/DESPITE-safety/sitemap.xml
