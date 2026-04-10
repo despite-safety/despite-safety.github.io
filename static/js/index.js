@@ -54,6 +54,99 @@ window.addEventListener('scroll', function() {
     }
 });
 
+// Task Explorer (data loaded from task-data.js)
+var currentTaskIndex = 0;
+
+function formatAction(action) {
+  return action.replace(/_/g, ' ');
+}
+
+function selectFileTab(btn, tabName) {
+  document.querySelectorAll('.file-tab').forEach(function(t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.file-content').forEach(function(c) { c.style.display = 'none'; });
+  document.getElementById('tab-' + tabName).style.display = 'block';
+}
+
+function selectTask(index) {
+  var task = TASKS[index];
+  currentTaskIndex = index;
+
+  // Update active task tab
+  document.querySelectorAll('.task-tab').forEach(function(tab, i) {
+    tab.classList.toggle('active', i === index);
+  });
+
+  // Reset to overview tab
+  document.querySelectorAll('.file-tab').forEach(function(t, i) { t.classList.toggle('active', i === 0); });
+  document.querySelectorAll('.file-content').forEach(function(c) { c.style.display = 'none'; });
+  document.getElementById('tab-overview').style.display = 'block';
+
+  // Header
+  document.getElementById('task-id').textContent = task.id;
+  document.getElementById('task-source').textContent = task.source;
+  document.getElementById('task-danger-type').textContent = task.dangerGroup + ' / ' + task.dangerType;
+
+  // Scenario narrative
+  document.getElementById('task-setting-inline').textContent = task.setting.toLowerCase();
+  document.getElementById('task-role-inline').textContent = task.role.toLowerCase();
+  document.getElementById('task-description').textContent = task.task.charAt(0).toLowerCase() + task.task.slice(1);
+
+  // Danger narrative
+  document.getElementById('task-danger-cause').textContent = task.cause + ' ';
+  document.getElementById('task-danger-result').textContent = task.result;
+
+  // Danger conditional effect
+  document.getElementById('task-danger-action-code').textContent = task.dangerCondition.action;
+  var condHtml = '';
+  task.dangerCondition.conditions.forEach(function(c) {
+    var cls = c.negated ? 'task-condition-item negated' : 'task-condition-item';
+    condHtml += '<span class="' + cls + '">' + c.text + '</span>';
+  });
+  document.getElementById('task-danger-conditions').innerHTML = condHtml;
+  document.getElementById('task-solution').textContent = task.solution;
+
+  // Plans
+  var unsafeHtml = '';
+  task.unsafePlan.forEach(function(step, i) {
+    var cls = task.unsafeDanger.indexOf(i) !== -1 ? ' class="danger-step"' : '';
+    unsafeHtml += '<li' + cls + '>' + formatAction(step) + '</li>';
+  });
+  document.getElementById('task-unsafe-plan').innerHTML = unsafeHtml;
+
+  var safeHtml = '';
+  task.safePlan.forEach(function(step, i) {
+    var cls = task.safeSafety.indexOf(i) !== -1 ? ' class="safety-step"' : '';
+    safeHtml += '<li' + cls + '>' + formatAction(step) + '</li>';
+  });
+  document.getElementById('task-safe-plan').innerHTML = safeHtml;
+
+  // Code tabs - update file path labels with task ID
+  var basePath = task.id + '/';
+  document.getElementById('label-domain').textContent = basePath + 'domain.pddl';
+  document.getElementById('label-problem').textContent = basePath + 'problem.pddl';
+  document.getElementById('label-code').textContent = basePath + 'code.py';
+  document.getElementById('label-metadata').textContent = basePath + 'metadata.json';
+
+  document.getElementById('code-metadata').textContent = task.metadata;
+  document.getElementById('code-domain').textContent = task.domain;
+  document.getElementById('code-problem').textContent = task.problem;
+  document.getElementById('code-python').textContent = task.code;
+
+  // Re-highlight code blocks
+  if (typeof hljs !== 'undefined') {
+    document.querySelectorAll('.file-code code').forEach(function(block) {
+      block.removeAttribute('data-highlighted');
+      hljs.highlightElement(block);
+    });
+  }
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', function() {
+  selectTask(0);
+});
+
 // Animated gradient effect for title
 (function() {
     const title = document.querySelector('.publication-title');

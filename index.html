@@ -63,6 +63,9 @@
   <link rel="stylesheet" href="static/css/bulma.min.css">
   <link rel="stylesheet" href="static/css/index.css">
 
+  <!-- Code highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css">
+
   <!-- Non-critical CSS -->
   <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
@@ -72,6 +75,10 @@
 
   <!-- JavaScript -->
   <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/json.min.js"></script>
+  <script defer src="static/js/task-data.js"></script>
   <script defer src="static/js/index.js"></script>
 
   <!-- Structured Data for Academic Papers -->
@@ -279,6 +286,134 @@
           <strong>c</strong>, Data generation pipeline. Heterogeneous sources pass through source-specific adapters into a unified danger formalization schema. Code generation produces Python scripts defining each planning task, with iterative refinement through execution and quality checks. This pipeline achieves $0.011 API cost per validated task.
         </p>
       </div>
+    </div>
+  </section>
+
+  <!-- Task Explorer -->
+  <section class="section" id="task-explorer">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Examples</h2>
+      <p class="has-text-centered" style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.05rem;">
+        Example tasks from the DESPITE benchmark, each with its Python source, PDDL definitions, and danger formalization.
+      </p>
+
+      <!-- Task selector -->
+      <div class="task-explorer-tabs">
+        <button class="task-tab active" onclick="selectTask(0)">Water Bottle Delivery</button>
+        <button class="task-tab" onclick="selectTask(1)">Hot Liquid Transport</button>
+        <button class="task-tab" onclick="selectTask(2)">Church Delivery</button>
+        <button class="task-tab" onclick="selectTask(3)">Kitchen Seasoning</button>
+        <button class="task-tab" onclick="selectTask(4)">TV Cleaning</button>
+        <button class="task-tab" onclick="selectTask(5)">Price Labeling</button>
+      </div>
+
+      <!-- Task card -->
+      <div class="task-explorer-card" id="task-card">
+        <!-- Header -->
+        <div class="task-header">
+          <div class="task-header-row">
+            <div class="task-header-title" id="task-id"></div>
+            <span class="task-badge task-badge-source" id="task-source"></span>
+            <span class="task-badge task-badge-danger" id="task-danger-type"></span>
+          </div>
+        </div>
+
+        <!-- File tabs -->
+        <div class="file-tabs">
+          <button class="file-tab active" onclick="selectFileTab(this, 'overview')">Overview</button>
+          <button class="file-tab" onclick="selectFileTab(this, 'code')">code.py</button>
+          <button class="file-tab" onclick="selectFileTab(this, 'domain')">domain.pddl</button>
+          <button class="file-tab" onclick="selectFileTab(this, 'problem')">problem.pddl</button>
+          <button class="file-tab" onclick="selectFileTab(this, 'metadata')">metadata.json</button>
+        </div>
+
+        <!-- Tab: Overview -->
+        <div class="file-content" id="tab-overview">
+          <!-- Scenario -->
+          <div class="task-scenario">
+            <div class="task-overview-description">
+              <span class="task-overview-label">Scenario:</span>
+              In a <strong id="task-setting-inline"></strong>, a <strong id="task-role-inline"></strong> must <span id="task-description"></span>
+            </div>
+            <div class="task-overview-description task-overview-danger-text">
+              <span class="task-overview-label task-overview-label-danger">Danger:</span>
+              <span id="task-danger-cause"></span>
+              This can lead to: <em id="task-danger-result"></em>
+            </div>
+          </div>
+
+          <!-- Danger Conditional Effect -->
+          <div class="task-danger-section">
+            <div class="task-danger-header">Danger Conditional Effect</div>
+            <div class="task-conditional-effect">
+              <div class="task-conditional-action">
+                <span class="task-field-label">Action</span>
+                <code id="task-danger-action-code"></code>
+              </div>
+              <div class="task-conditional-trigger">
+                <span class="task-field-label">Triggers danger when</span>
+                <div class="task-condition-list" id="task-danger-conditions"></div>
+              </div>
+              <div class="task-conditional-explain">
+                <span class="task-field-label">Safety solution</span>
+                <span id="task-solution"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plans comparison -->
+          <div class="task-plans">
+            <div class="task-plan task-plan-unsafe">
+              <div class="task-plan-header task-plan-header-unsafe">Reference Unsafe Plan</div>
+              <ol class="task-plan-steps" id="task-unsafe-plan"></ol>
+            </div>
+            <div class="task-plan task-plan-safe">
+              <div class="task-plan-header task-plan-header-safe">Reference Safe Plan</div>
+              <ol class="task-plan-steps" id="task-safe-plan"></ol>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tab: code.py -->
+        <div class="file-content" id="tab-code" style="display: none;">
+          <div class="file-code-wrap">
+            <div class="file-path-label" id="label-code">code.py</div>
+            <pre class="file-code"><code id="code-python" class="language-python"></code></pre>
+          </div>
+        </div>
+
+        <!-- Tab: domain.pddl -->
+        <div class="file-content" id="tab-domain" style="display: none;">
+          <div class="file-code-wrap">
+            <div class="file-path-label" id="label-domain">domain.pddl</div>
+            <pre class="file-code"><code id="code-domain" class="language-lisp"></code></pre>
+          </div>
+        </div>
+
+        <!-- Tab: problem.pddl -->
+        <div class="file-content" id="tab-problem" style="display: none;">
+          <div class="file-code-wrap">
+            <div class="file-path-label" id="label-problem">problem.pddl</div>
+            <pre class="file-code"><code id="code-problem" class="language-lisp"></code></pre>
+          </div>
+        </div>
+
+        <!-- Tab: metadata.json -->
+        <div class="file-content" id="tab-metadata" style="display: none;">
+          <div class="file-code-wrap">
+            <div class="file-path-label" id="label-metadata">metadata.json</div>
+            <pre class="file-code"><code id="code-metadata" class="language-json"></code></pre>
+          </div>
+        </div>
+      </div>
+
+      <p class="has-text-centered" style="margin-top: 1.5rem;">
+        <a href="https://huggingface.co/datasets/Lennittus/DESPITE" target="_blank" class="external-link button is-normal is-rounded is-dark">
+          <span class="icon"><i class="fas fa-database"></i></span>
+          <span>Browse full dataset on HuggingFace (12,279 tasks)</span>
+        </a>
+      </p>
     </div>
   </section>
 
