@@ -299,12 +299,12 @@
 
       <!-- Task selector -->
       <div class="task-explorer-tabs">
-        <button class="task-tab active" onclick="selectTask(0)">Water Bottle Delivery</button>
-        <button class="task-tab" onclick="selectTask(1)">Hot Liquid Transport</button>
-        <button class="task-tab" onclick="selectTask(2)">Church Delivery</button>
-        <button class="task-tab" onclick="selectTask(3)">Kitchen Seasoning</button>
-        <button class="task-tab" onclick="selectTask(4)">TV Cleaning</button>
-        <button class="task-tab" onclick="selectTask(5)">Price Labeling</button>
+        <button class="task-tab active" onclick="selectTask(0)">&#x1F4A7; Water Bottle Delivery</button>
+        <button class="task-tab" onclick="selectTask(1)">&#x2615; Hot Liquid Transport</button>
+        <button class="task-tab" onclick="selectTask(2)">&#x26EA; Church Delivery</button>
+        <button class="task-tab" onclick="selectTask(3)">&#x1F9C2; Kitchen Seasoning</button>
+        <button class="task-tab" onclick="selectTask(4)">&#x2668;&#xFE0F; Radiator Cleaning</button>
+        <button class="task-tab" onclick="selectTask(5)">&#x1F3F7; Price Labeling</button>
       </div>
 
       <!-- Task card -->
@@ -329,7 +329,7 @@
 
         <!-- Tab: Overview -->
         <div class="file-content" id="tab-overview">
-          <!-- Scenario -->
+          <!-- Scenario & Danger -->
           <div class="task-scenario">
             <div class="task-overview-description">
               <span class="task-overview-label">Scenario:</span>
@@ -342,21 +342,31 @@
             </div>
           </div>
 
-          <!-- Danger Conditional Effect -->
+          <!-- Initial Context & Danger Effect Condition -->
           <div class="task-danger-section">
-            <div class="task-danger-header">Danger Conditional Effect</div>
-            <div class="task-conditional-effect">
-              <div class="task-conditional-action">
-                <span class="task-field-label">Action</span>
-                <code id="task-danger-action-code"></code>
+            <div class="task-danger-two-col">
+              <div class="task-danger-col">
+                <div class="task-danger-header">Initial Context</div>
+                <div class="task-context-description">All explicit predicates in the initial state, provided to the LLM without distinction.</div>
+                <div class="task-condition-list" id="task-context-predicates"></div>
+                <div class="task-context-legend">
+                  <span class="task-context-legend-item"><span class="task-context-legend-swatch swatch-hint"></span> Safety-relevant</span>
+                  <span class="task-context-legend-item"><span class="task-context-legend-swatch swatch-setup"></span> Task setup</span>
+                </div>
               </div>
-              <div class="task-conditional-trigger">
-                <span class="task-field-label">Triggers danger when</span>
-                <div class="task-condition-list" id="task-danger-conditions"></div>
-              </div>
-              <div class="task-conditional-explain">
-                <span class="task-field-label">Safety solution</span>
-                <span id="task-solution"></span>
+              <div class="task-danger-col">
+                <div class="task-danger-header">Danger Effect Condition</div>
+                <div class="task-context-description">Hidden from the LLM. An action triggers danger when certain conditions hold.</div>
+                <div class="task-conditional-effect">
+                  <div class="task-conditional-action">
+                    <span class="task-field-label">Action</span>
+                    <code id="task-danger-action-code"></code>
+                  </div>
+                  <div class="task-conditional-trigger">
+                    <span class="task-field-label">Triggers danger when</span>
+                    <div class="task-condition-list" id="task-danger-conditions"></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

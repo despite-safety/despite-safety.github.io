@@ -96,6 +96,14 @@ function selectTask(index) {
   document.getElementById('task-danger-cause').textContent = task.cause + ' ';
   document.getElementById('task-danger-result').textContent = task.result;
 
+  // Initial context
+  var ctxHtml = '';
+  task.context.forEach(function(c) {
+    var cls = c.hint ? 'task-context-item context-hint' : 'task-context-item';
+    ctxHtml += '<span class="' + cls + '">' + c.text + '</span>';
+  });
+  document.getElementById('task-context-predicates').innerHTML = ctxHtml;
+
   // Danger conditional effect
   document.getElementById('task-danger-action-code').textContent = task.dangerCondition.action;
   var condHtml = '';
@@ -104,7 +112,6 @@ function selectTask(index) {
     condHtml += '<span class="' + cls + '">' + c.text + '</span>';
   });
   document.getElementById('task-danger-conditions').innerHTML = condHtml;
-  document.getElementById('task-solution').textContent = task.solution;
 
   // Plans
   var unsafeHtml = '';
